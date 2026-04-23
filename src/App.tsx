@@ -1,0 +1,83 @@
+import { useState, useEffect } from 'react'
+
+import './App.css'
+import { usePokemon, usePokemonTypes } from './hooks/usePokemon'
+import type { Pokemon } from './types'
+import PokemonContainer from './components/PokemonContainer'
+import SearchBar from './components/SearchBar'
+
+function App() {
+  const [allPokemon, setAllPokemon] = useState<Pokemon[]>([])
+  const [pokemonTypes, setPokemonTypes] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedType, setSelectedType] = useState('')
+  const [pokemonData, setPokemonData] = useState<Pokemon[]>([])
+
+  useEffect(() => {
+    const fetchPokemon = async () => {
+      const data = await usePokemon()
+      setAllPokemon(data)
+      setPokemonData(data)
+    }
+
+    const fetchPokemonTypes = async () => {
+      const types = await usePokemonTypes()
+      setPokemonTypes(types)
+    }
+
+    const fetchData = async () => {
+      setIsLoading(true)
+      await Promise.all([fetchPokemon(), fetchPokemonTypes()])
+      setIsLoading(false)
+    }
+
+    fetchData()
+  }, [])
+
+  useEffect(() => {
+    const handler = window.setTimeout(() => {
+      let filtered = allPokemon
+
+      if (searchTerm) {
+        filtered = filtered.filter(pokemon =>
+          pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      }
+
+      if (selectedType) {
+        filtered = filtered.filter(pokemon =>
+          pokemon.types.includes(selectedType)
+        )
+      }
+
+      setPokemonData(filtered)
+    }, 300)
+
+    return () => {
+      window.clearTimeout(handler)
+    }
+  }, [searchTerm, selectedType, allPokemon])
+
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  return (
+    <>
+      <SearchBar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedType={selectedType}
+        setSelectedType={setSelectedType}
+        pokemonTypes={pokemonTypes}
+      />
+
+      <PokemonContainer pokemonData={pokemonData} />
+    </>
+  )
+}
+
+export default App
