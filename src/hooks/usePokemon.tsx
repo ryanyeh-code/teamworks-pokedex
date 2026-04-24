@@ -1,9 +1,11 @@
 import type { Pokemon } from "../types"
 
+const API_URL = 'https://pokeapi.co/api/v2'
+
 export const usePokemon = async() => {
     const pokemonList: Pokemon[] = []
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151&offset=0')
+        const response = await fetch(`${API_URL}/pokemon?limit=151&offset=0`)
         const data = await response.json()
 
         await Promise.all(
@@ -28,7 +30,7 @@ export const usePokemon = async() => {
 export const usePokemonTypes = async() => {
     const pokemonTypes: string[] = []
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/type')
+        const response = await fetch(`${API_URL}/type`)
         const data = await response.json()
 
         data.results.forEach((type:any) => {
