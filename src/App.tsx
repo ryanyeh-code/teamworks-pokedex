@@ -13,13 +13,13 @@ function App() {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState('')
-  const [pokemonData, setPokemonData] = useState<Pokemon[]>([])
+  const [displayPokemon, setDisplayPokemon] = useState<Pokemon[]>([])
 
   useEffect(() => {
     const fetchPokemon = async () => {
       const data = await usePokemon()
       setAllPokemon(data)
-      setPokemonData(data)
+      setDisplayPokemon(data)
     }
 
     const fetchPokemonTypes = async () => {
@@ -52,7 +52,7 @@ function App() {
         )
       }
 
-      setPokemonData(filtered)
+      setDisplayPokemon(filtered)
     }, 300)
 
     return () => {
@@ -74,8 +74,7 @@ function App() {
         setSelectedType={setSelectedType}
         pokemonTypes={pokemonTypes}
       />
-
-      <PokemonContainer pokemonData={pokemonData} />
+      <PokemonContainer pokemonData={displayPokemon} />
     </>
   )
 }
