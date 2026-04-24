@@ -57,9 +57,9 @@ A modern, responsive Pokedex application built with React and TypeScript. Browse
 ```
 src/
 ├── components/
-│   ├── pokemonCard.tsx
-│   ├── pokemonContainer.tsx
-│   └── searchBar.tsx
+│   ├── PokemonCard.tsx
+│   ├── PokemonContainer.tsx
+│   └── SearchBar.tsx
 ├── hooks/
 │   └── usePokemon.tsx
 ├── types/
@@ -69,37 +69,67 @@ src/
 └── index.css
 ```
 
-## Contributing
+## API info
+For info on the API visit this page: https://pokeapi.co/
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Decisions
 
-## License
+### Data Loading Strategy
+- Load all data upfront (151 Pokemon + 21 types) as it's a small dataset
+- Enables fast client-side search and filtering
+- For larger datasets (e.g., all generations), consider server-side handling
+- Implemented via `useEffect` with empty dependencies
 
-This project is licensed under the MIT License.
-import reactDom from 'eslint-plugin-react-dom'
+### Pokemon Selection
+- Fetch first 151 Pokemon using simple ID range (1-151)
+- Alternative: Use `/generation/1/` endpoint then fetch individual Pokemon
+- Current approach is simpler and sufficient
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Component Architecture
+- Split UI into separate components (`SearchBar`, `PokemonContainer`, `PokemonCard`)
+- Keeps `App.tsx` focused on state management and prop passing
+
+### API Integration
+- Custom hooks (`usePokemon`, `usePokemonTypes`) for API calls
+- Improves testability and reusability
+- Uses native Fetch API for simplicity
+
+### Error Handling
+- Top-level `ErrorBoundary` for debugging and user experience
+- Catches JavaScript errors with fallback UI
+
+### Tech Stack Choices
+- **Vite**: Fast development startup, minimal boilerplate
+- **Fetch API**: Built-in, sufficient for simple API needs
+- **No Backend**: PokeAPI provides all data, small dataset doesn't require caching
+- **Native HTML Select**: Controlled input, no customization needed
+- **react-error-boundary**: Easy implementation for error boundaries
+
+## ToDos
+
+### Features
+- [ ] Add error page for API call failures
+- [ ] Hide console errors in production, display in error page
+- [ ] Add loading states for individual components
+- [ ] Implement pagination for large Pokemon lists
+- [ ] Add Pokemon detail modal/page
+
+### Typing
+- [ ] Define proper types for raw API responses (`pokemon` and `type`)
+- [ ] Replace `any` types with specific interfaces
+- [ ] Add type guards for API data validation
+
+### Testing
+- [ ] Unit tests for search and filter functionality
+- [ ] Tests for initial Pokemon/types loading (with mocked API)
+- [ ] Error handling tests for failed API calls
+- [ ] Component integration tests
+
+### Bugs
+- [ ] Fix inconsistent Pokemon ordering on refresh
+- [ ] Handle edge cases in search/filter combinations
+
+### Cleanup
+- [ ] Remove unused Vite boilerplate code
+- [ ] Optimize bundle size and performance
+- [ ] Add proper TypeScript strict mode settings
