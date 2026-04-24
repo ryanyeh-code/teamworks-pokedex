@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import './App.css'
-import { usePokemon, usePokemonTypes } from './hooks/usePokemon'
+import { fetchPokemon, fetchPokemonTypes } from './hooks/usePokemon'
 import type { Pokemon } from './types'
 import PokemonContainer from './components/PokemonContainer'
 import SearchBar from './components/SearchBar'
@@ -16,20 +16,20 @@ function App() {
   const [displayPokemon, setDisplayPokemon] = useState<Pokemon[]>([])
 
   useEffect(() => {
-    const fetchPokemon = async () => {
-      const data = await usePokemon()
+    const loadPokemon = async () => {
+      const data = await fetchPokemon()
       setAllPokemon(data)
       setDisplayPokemon(data)
     }
 
-    const fetchPokemonTypes = async () => {
-      const types = await usePokemonTypes()
+    const loadPokemonTypes = async () => {
+      const types = await fetchPokemonTypes()
       setPokemonTypes(types)
     }
 
     const fetchData = async () => {
       setIsLoading(true)
-      await Promise.all([fetchPokemon(), fetchPokemonTypes()])
+      await Promise.all([loadPokemon(), loadPokemonTypes()])
       setIsLoading(false)
     }
 

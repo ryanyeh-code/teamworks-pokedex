@@ -2,7 +2,7 @@ import type { Pokemon } from "../types"
 
 const API_URL = 'https://pokeapi.co/api/v2'
 
-export const usePokemon = async() => {
+export const fetchPokemon = async() => {
     const pokemonList: Pokemon[] = []
     try {
         const response = await fetch(`${API_URL}/pokemon?limit=151&offset=0`)
@@ -27,7 +27,7 @@ export const usePokemon = async() => {
     }
 }
 
-export const usePokemonTypes = async() => {
+export const fetchPokemonTypes = async() => {
     const pokemonTypes: string[] = []
     try {
         const response = await fetch(`${API_URL}/type`)
